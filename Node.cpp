@@ -17,9 +17,11 @@ Node::~Node() {
 int Node::getValue() {
   return value;
 }
+//Get the connected edge
 edge* Node::getNext() {
   return next;
 }
+//Connect an edge
 void Node::setNext(edge* e) {
   next = e;
 }

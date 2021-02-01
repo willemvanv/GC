@@ -4,9 +4,10 @@
 #include <cstring>
 
 using namespace std;
-
+//Edge class
 class edge {
  public:
+  //Functions
   edge(int n, int v);
   ~edge();
   edge* getNext();
@@ -14,8 +15,11 @@ class edge {
   int getValue();
   int getNode();
  private:
+  //Weight of edge
   int value;
+  //Label of vertex connected to from initial vertex
   int node;
+  //Connected edge
   edge* next;
 };
 #endif

@@ -7,8 +7,10 @@
 
 using namespace std;
 
+//Graph class that makes graph using adjecency table
 class graph {
  public:
+  //Functions
   graph();
   ~graph();
   void addVertex();
@@ -23,6 +25,7 @@ class graph {
   int getEdgeWeight(Node* a, Node* b);
   void t();
  private:
+  //Adjecency table
   Node* table[20];
 };
 #endif

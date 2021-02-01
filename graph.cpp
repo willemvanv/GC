@@ -1,3 +1,4 @@
+//Includes
 #include <iostream>
 #include "graph.h"
 #include "edge.h"
@@ -5,15 +6,17 @@
 #include <climits>
 
 using namespace std;
-
+//Constructor
 graph::graph() {
   for (int i = 0; i < 20; i++) {
     table[i] = NULL;
   }
 }
+//Deconstructor
 graph::~graph() {
 
 }
+//Function to add vertex
 void graph::addVertex() {
   cout << "enter int label" << endl;
   int label;
@@ -28,6 +31,7 @@ void graph::addVertex() {
     }
   }
 }
+//Function to add edge
 void graph::addEdge() {
   int firstNode;
   int secondNode;
@@ -62,6 +66,7 @@ void graph::addEdge() {
     }
   }
 }
+//Function to remove vertex
 void graph::removeVertex() {
   cout << "enter vertex label" << endl;
   int a;
@@ -114,6 +119,7 @@ void graph::removeVertex() {
     }
   }
 }
+//Function to remove edge
 void graph::removeEdge() {
   int firstNode;
   int secondNode;
@@ -173,6 +179,7 @@ void graph::removeEdge() {
     cout << "edge does not exist" << endl;
   }
 }
+//Function to print adjacency table
 void graph::printTable() {
   for (int i = 0; i < 20; i++) {
     if (table[i] != NULL) {
@@ -186,6 +193,7 @@ void graph::printTable() {
     cout << endl;
   }
 }
+//Testing functions (feel free to ignore)
 void graph::t() {
   table[0] = new Node(1);
   table[1] = new Node(2);
@@ -198,8 +206,9 @@ void graph::test() {
   table[3] = new Node(3);
   table[4] = new Node(4);
   table[5] = new Node(5);
-  table[0]->setNext(new edge(1, 0));
+  table[0]->setNext(new edge(1, 1));
   table[0]->getNext()->setNext(new edge(4, 1));
+  table[0]->getNext()->getNext()->setNext(new edge(5, 3));
   table[2]->setNext(new edge(0, 8));
   table[3]->setNext(new edge(2, 2));
   table[3]->getNext()->setNext(new edge(4, 3));
@@ -208,6 +217,7 @@ void graph::test() {
   table[5]->getNext()->setNext(new edge(2, 6));
   table[1]->setNext(new edge(3, 7));
 }
+//Function to find shortest path
 void graph::findShortest() {
   int firstNode;
   int secondNode;
@@ -225,22 +235,17 @@ void graph::findShortest() {
     else if (table[i] != NULL && table[i]->getValue() == secondNode)
       second = table[i];
   }
-  cout << "first: " << first->getValue() << endl;
-  cout << "second: " << second->getValue() << endl;
   if (first == NULL || second == NULL) {
     cout << "one or both vertecies don't exist" << endl;
   }
   // Dijkstra's algorithm
   else {
-    cout << "u" << endl;
     int len = 0;
     for (int i = 0; i < 20; i++) {
       if (table[i] != NULL) {
 	len++;
       }
     }
-    cout << "len: " << len << endl;
-    cout << "i" << endl;
     Node* set[len];
     int b = 0;
     for (int i = 0; i < 20; i++) {
@@ -249,22 +254,16 @@ void graph::findShortest() {
 	b++;
       }
     }
-    cout << set[1]->getValue() << endl;
-    cout << "z" << endl;
     int src = 0;
     int tgt = 0;
     for (int i = 0; i < len; i++) {
-      if (set[i] = first) {
-	cout << "b" << i << endl;
+      if (set[i] == first) {
 	src = i;
       }
-      else if (set[i] = second) {
-	cout << "a" << i << endl;
+      else if (set[i] == second) {
 	tgt = i;
       }
     }
-    cout << "hi"<< endl;
-    //
     bool SPTset[len];
     int dist[len];
     int prev[len];
@@ -273,44 +272,46 @@ void graph::findShortest() {
       prev[i] = INT_MAX;
       SPTset[i] = false;
     }
-    cout << "g" << endl;
     dist[src] = 0;
     for (int i = 0; i < len - 1; i++) {
       int u = getMinDist(SPTset, dist, len);
       SPTset[u] = true;
       for (int v = 0; v < len; v++) {
-	if (SPTset[v] == false && isEdge(set[u], set[v]) == true && dist[u] != INT_MAX &&
-	    getEdgeWeight(set[u], set[v]) + dist[u] < dist[v]) {
+	if ((SPTset[v] == false) && (isEdge(set[u], set[v]) == true) && (dist[u] != INT_MAX) &&
+	    (getEdgeWeight(set[u], set[v]) + dist[u] < dist[v])) {
 	  dist[v] = getEdgeWeight(set[u], set[v]) + dist[u];
 	  prev[v] = u;
 	}
       }
     }
-    cout << "ha"<< endl;
-    cout << set[tgt]->getValue() << endl;
     if (prev[tgt] != INT_MAX) {
-      cout << "ho"<< endl;
       Node* s[20];
       int u = tgt;
       for (int i = 0; i < 20; i++) {
 	s[i] = NULL;
       }
-      cout << "hi"<< endl;
-      int j;
+      int j = 0;
       while (prev[u] != INT_MAX) {
 	s[j] = set[u];
 	u = prev[u];
+	j++;
       }
-      cout << "quickest path:  ";
-      for (int l; l < j + 1; l++) {
-        cout << " -> " << s[l]->getValue();
+      s[j] = set[src];
+      cout << "quickest path:  " << endl;
+      for (int l = j; l >= 0; l--) {
+        cout << s[l]->getValue();
+	if (l != 0) {
+	  cout << " -> ";
+	}
       }
-      cout << "total: " << dist[tgt] << endl;
+      cout << "  total: " << dist[tgt] << endl;
     }
     else
       cout << "no connection found" << endl;
   }
 }
+//Utility Functions below
+//Function to find vertex with lowest distance from a source
 int graph::getMinDist(bool* SPTset, int* dist, int len) {
   int min = INT_MAX;
   int minIndex;
@@ -322,6 +323,7 @@ int graph::getMinDist(bool* SPTset, int* dist, int len) {
   }
   return minIndex;
 }
+//Function to tell if an edge exists between two points
 bool graph::isEdge(Node* a, Node* b) {
   int g = b->getValue();
   if (a->getNext() != NULL) {
@@ -334,11 +336,13 @@ bool graph::isEdge(Node* a, Node* b) {
 	if (current->getNext()->getNode() == g) {
 	  return true;
 	}
+	current = current->getNext();
       }
     }
   }
   return false;
 }
+//Function to get the weight of an edge between two points
 int graph::getEdgeWeight(Node* a, Node* b) {
   int g = b->getValue();
   if (a->getNext() != NULL) {
@@ -351,6 +355,7 @@ int graph::getEdgeWeight(Node* a, Node* b) {
 	if (current->getNext()->getNode() == g) {
 	  return current->getNext()->getValue();
 	}
+	current = current->getNext();
       }
     }
   }
